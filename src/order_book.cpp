@@ -3,6 +3,13 @@
 
 void OrderBook::add_order(const Order& order) {
     // TODO: add to orders_, then add quantity to the right price level in bids_ or asks_
+    // this function takes in a reference to an Order object
+    orders_[order.id] = order;
+    if (order.side == Side::Bid){
+        bids_[order.price] += order.quantity;
+    } else {
+        asks_[order.price] += order.quantity;
+    }
 }
 
 void OrderBook::cancel_order(uint64_t order_id) {
