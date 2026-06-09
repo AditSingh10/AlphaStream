@@ -61,3 +61,49 @@ void OrderBook::print() const {
 
 
 }
+
+void OrderBook::execute_order(uint64_t order_id, uint32_t executed_quantity) {
+    auto it = orders_.find(order_id);
+    if (it == orders_.end()) {
+        std::cerr << "execute_order: unknown order " << order_id << "\n";
+        return;
+    }
+
+    Order& order = it->second;
+    auto price = order.price;
+
+    if (order.side == Side::Bid) {
+        auto level_it = bids_.find(price);
+        if (level_it != bids_.end()) {
+            if (level_it->second < executed_quantity) {
+                std::cerr << "execute_order: quantity underflow for order " << order_id << "\n";
+                return;
+            }
+            level_it->second -= executed_quantity;
+            if (level_it->second == 0)
+                bids_.erase(level_it);
+        }
+    } else {
+        auto level_it = asks_.find(price);
+        if (level_it != asks_.end()) {
+            if (level_it->second < executed_quantity) {
+                std::cerr << "execute_order: quantity underflow for order " << order_id << "\n";
+                return;
+            }
+            level_it->second -= executed_quantity;
+            if (level_it->second == 0)
+                asks_.erase(level_it);
+        }
+    }
+
+    if (executed_quantity > order.quantity) {
+        std::cerr << "execute_order: executed_quantity exceeds order size for order " << order_id << "\n";
+        return;
+    }
+
+    if (executed_quantity == order.quantity) {
+        orders_.erase(it);
+    } else {
+        order.quantity -= executed_quantity;
+    }
+}
