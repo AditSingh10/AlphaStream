@@ -11,9 +11,9 @@ struct Order {
 };
 
 struct OHLCV {
-    int64_t OPEN;
-    int64_t HIGH;
-    int64_t LOW;
-    int64_t CLOSE;
-    uint32_t VOLUME;
+    int64_t open;
+    int64_t high;
+    int64_t low;
+    int64_t close;
+    uint32_t volume;
 };

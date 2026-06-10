@@ -2,7 +2,7 @@
 #include "order_book.hpp"
 
 int main() {
-    OrderBook book;
+    OrderBook book(60);
 
     book.add_order({1, Side::Bid, 10050, 100});
     book.add_order({2, Side::Bid, 10025, 200});

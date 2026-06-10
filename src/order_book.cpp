@@ -2,6 +2,12 @@
 #include <iostream>
 #include <ranges>
 
+OrderBook::OrderBook(uint64_t window_width){
+    window_start_ = 0;
+    current_ = {0, 0, 0, 0, 0};
+    window_width_ = window_width;
+}
+
 void OrderBook::add_order(const Order& order) {
     orders_[order.id] = order;
     if (order.side == Side::Bid){
@@ -101,11 +107,14 @@ void OrderBook::execute_order(uint64_t order_id, uint32_t executed_quantity, uin
         return;
     }
 
+    accumulate_order(price, executed_quantity, timestamp);
     if (executed_quantity == order.quantity) {
         orders_.erase(it);
     } else {
         order.quantity -= executed_quantity;
     }
+
+    
 }
 
 void OrderBook::modify_order(uint64_t order_id, int64_t new_price, uint32_t new_quantity) {
@@ -119,4 +128,8 @@ void OrderBook::modify_order(uint64_t order_id, int64_t new_price, uint32_t new_
     Side side = it->second.side;
     cancel_order(order_id);
     add_order({order_id, side, new_price, new_quantity});
+}
+
+void OrderBook::accumulate_order(int64_t price, uint32_t executed_quantity, uint64_t timestamp){
+
 }
