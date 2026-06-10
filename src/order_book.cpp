@@ -62,7 +62,7 @@ void OrderBook::print() const {
 
 }
 
-void OrderBook::execute_order(uint64_t order_id, uint32_t executed_quantity) {
+void OrderBook::execute_order(uint64_t order_id, uint32_t executed_quantity, uint64_t timestamp) {
     auto it = orders_.find(order_id);
     if (it == orders_.end()) {
         std::cerr << "execute_order: unknown order " << order_id << "\n";
