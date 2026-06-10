@@ -107,3 +107,16 @@ void OrderBook::execute_order(uint64_t order_id, uint32_t executed_quantity) {
         order.quantity -= executed_quantity;
     }
 }
+
+void OrderBook::modify_order(uint64_t order_id, int64_t new_price, uint32_t new_quantity) {
+    // treat modifies as cancel and re-add
+    auto it = orders_.find(order_id);
+    if (it == orders_.end()) {
+        std::cerr << "modify_order: unknown order " << order_id << "\n";
+        return;
+    }
+
+    Side side = it->second.side;
+    cancel_order(order_id);
+    add_order({order_id, side, new_price, new_quantity});
+}
